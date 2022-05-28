@@ -1,7 +1,6 @@
-const sharedTransformers = {
-  route_id: "routeID",
-  stop_id: "stopID",
-};
+// The transformer keys should correspond with the database columns (where they exist)
+
+const sharedTransformers = {};
 
 export const routeKeyTransformers = {
   ...sharedTransformers,
@@ -14,7 +13,7 @@ export const routeKeyTransformers = {
   route_type: "type",
   route_url: "url",
   route_color: "color",
-  route_text_color: "textColor",
+  route_text_color: "text_color",
 };
 
 export const stopKeyTransformers = {
@@ -26,6 +25,6 @@ export const stopKeyTransformers = {
   stop_lon: "longitude",
   zone_id: "zone",
   stop_url: "url",
-  location_type: "locationType",
-  parent_station: "parentStationID",
+  location_type: "location_type",
+  parent_station: "parent_stop_id",
 };

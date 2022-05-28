@@ -1,13 +1,11 @@
-import { GTFSStaticParser } from "./services/gtfsStatic/parser";
+import { ApolloServer } from "apollo-server";
+import { resolvers } from "./graphql/resolvers";
+import { typeDefs } from "./graphql/schema";
 
-async function main() {
-  const parser = new GTFSStaticParser();
+const server = new ApolloServer({
+  typeDefs: typeDefs,
+  resolvers: resolvers,
+  csrfPrevention: true,
+});
 
-  const stops = await parser.parseStops(
-    "/Users/john/projects/tldb/expo/test_data/google_transit (1)"
-  );
-
-  console.log(stops.find((s) => s.code === "50718"));
-}
-
-main();
+server.listen().then(({ url }) => console.log(`Server is ready at ${url}`));

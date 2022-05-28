@@ -1,4 +1,6 @@
 node_modules/
 build/
 
+config.js
+
 test_data/

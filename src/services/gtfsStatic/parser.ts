@@ -6,26 +6,52 @@ import {
   isRapidTransitRoute,
   RapidTransitRoute,
   Route,
-} from "../../structures/GTFSStatic/routes";
-import { Stop } from "../../structures/GTFSStatic/stops";
+} from "../../db/entities/Route";
+import { Stop } from "../../db/entities/Stop";
 import { convertToObjects, processRecords } from "./helpers";
 import { routeKeyTransformers, stopKeyTransformers } from "./transformers";
+import { RoutesService } from "../db/RoutesService";
+import { StopsService } from "../db/StopsService";
 
 // Structure: https://developers.google.com/transit/gtfs/reference
 export class GTFSStaticParser {
-  public async parseRoutes(folderpath: string) {
+  private stopsService = new StopsService();
+  private routesService = new RoutesService();
+
+  public async ingestAll(folderpath: string) {
+    const { routes, rapidTransitRoutes } = await this.parseRoutes(folderpath);
+    const stops = await this.parseStops(folderpath);
+
+    await this.stopsService.ingest(stops);
+    await this.routesService.ingest(routes, rapidTransitRoutes);
+  }
+
+  private async parseRoutes(folderpath: string): Promise<{
+    routes: Route[];
+    rapidTransitRoutes: RapidTransitRoute[];
+  }> {
     const filepath = path.join(folderpath, "routes.txt");
 
     const parsed = await this.parse(filepath);
 
-    const objects = convertToObjects(parsed, routeKeyTransformers);
+    // Don't include HandyDart as a route
+    const objects = convertToObjects(parsed, routeKeyTransformers).filter(
+      (r) => r.id !== "HD"
+    );
 
-    return objects.map((o) =>
+    const mapped = objects.map((o) =>
       isRapidTransitRoute(o) ? new RapidTransitRoute(o) : new Route(o)
     );
+
+    return {
+      routes: mapped.filter((r) => !(r instanceof RapidTransitRoute)),
+      rapidTransitRoutes: mapped.filter(
+        (r) => r instanceof RapidTransitRoute
+      ) as RapidTransitRoute[],
+    };
   }
 
-  public async parseStops(folderpath: string) {
+  private async parseStops(folderpath: string) {
     const filepath = path.join(folderpath, "stops.txt");
 
     const parsed = await this.parse(filepath);
