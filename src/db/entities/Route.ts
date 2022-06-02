@@ -2,7 +2,7 @@ import { cleanRouteNumber } from "translinkjs";
 import { SimpleMap } from "../../structures/helpers";
 import { Agency } from "../../structures/GTFSStatic/shared";
 import { Entity } from "../entity";
-import { toInt } from "../helpers";
+import { toInt } from "../../helpers/typeConverters";
 
 export class Route implements Entity {
   id: number;
@@ -15,7 +15,7 @@ export class Route implements Entity {
   // description: string;
   // url: string
 
-  constructor(raw: SimpleMap<string>) {
+  constructor(raw: SimpleMap) {
     this.id = toInt(raw.id)!;
     this.agency = (raw.agency as Agency) || Agency.Translink;
     this.number = cleanRouteNumber(raw.number);
@@ -55,8 +55,8 @@ export class RapidTransitRoute extends Route implements Entity {
   }
 }
 
-export function isRapidTransitRoute(raw: SimpleMap<string>): boolean {
-  return !!raw.color;
+export function isRapidTransitRoute(raw: SimpleMap): boolean {
+  return raw.type !== 3 && raw.type !== "3";
 }
 
 // https://developers.google.com/transit/gtfs/reference#routestxt

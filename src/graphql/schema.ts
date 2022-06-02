@@ -6,12 +6,17 @@ export const typeDefs = gql`
     stops(filters: StopFilters): [Stop!]!
   }
 
+  type Mutation {
+    ingestGTFSStaticData: String
+  }
+
   # Return types
 
   type Route {
     id: ID!
     number: String!
     name: String!
+    patterns: [Pattern!]!
   }
 
   type Stop {
@@ -25,6 +30,10 @@ export const typeDefs = gql`
   type Coordinates {
     latitude: Float!
     longitude: Float!
+  }
+
+  type Pattern {
+    name: String!
   }
 
   # Input types

@@ -9,13 +9,14 @@ export async function up(knex: Knex): Promise<void> {
     createRouteTable(table);
 
     table.string("color");
-    table.string("text_colour");
+    table.string("text_color");
     table.integer("type");
   });
 }
 
 export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTable("routes");
+  await knex.schema.dropTable("rapid_transit_routes");
 }
 
 // Helpers

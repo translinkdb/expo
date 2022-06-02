@@ -1,7 +1,7 @@
 import { Coordinates } from "translinkjs";
 import { SimpleMap } from "../../structures/helpers";
 import { Entity } from "../entity";
-import { toFloat, toInt } from "../helpers";
+import { toFloat, toInt } from "../../helpers/typeConverters";
 
 export class Stop implements Entity {
   id!: number;
@@ -39,10 +39,7 @@ export class Stop implements Entity {
   }
 
   get coordinates(): Coordinates {
-    return {
-      longitude: this.longitude,
-      latitude: this.latitude,
-    };
+    return { longitude: this.longitude, latitude: this.latitude };
   }
 }
 
