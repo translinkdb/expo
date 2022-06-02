@@ -36,7 +36,11 @@ export class RoutesService {
   public async list(filters?: RoutesFilters): Promise<Route[]> {
     const query = applyFilters(db.queryBuilder(), filters || {});
 
-    const routes: SimpleMap[] = await query.select().from("routes");
+    const routes: SimpleMap[] = await query
+      .select()
+      .whereNot("number", "=", "?")
+      .orderByRaw("NULLIF(regexp_replace(number, '\\D', '9999', 'g'), '')::int")
+      .from("routes");
 
     return routes.map((r) => new Route(r));
   }
