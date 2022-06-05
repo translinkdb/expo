@@ -33,7 +33,22 @@ export const typeDefs = gql`
   }
 
   type Pattern {
+    id: ID!
     name: String!
+    headsign: String!
+    tripCount: Int!
+    shape: Shape!
+  }
+
+  type Shape {
+    id: ID!
+    points: [ShapePoint!]!
+  }
+
+  type ShapePoint {
+    coordinates: Coordinates!
+    order: Int!
+    cumulativeDistance: Float!
   }
 
   # Input types

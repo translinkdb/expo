@@ -6,8 +6,8 @@ import { toFloat, toInt } from "../../helpers/typeConverters";
 export class Shape implements Entity {
   id: number;
 
-  constructor(id: number) {
-    this.id = id;
+  constructor(raw: SimpleMap) {
+    this.id = raw.id;
   }
 
   asInsertable(): SimpleMap<any> {

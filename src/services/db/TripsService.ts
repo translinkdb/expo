@@ -20,10 +20,6 @@ export class TripsService {
     const nonUnique = rawTrips.map((t) => {
       const pattern = rawPatterns.find((p) => p.trip_id === t.id);
 
-      if (pattern === undefined) {
-        console.log(t);
-      }
-
       return {
         route_id: t.route_id,
         pattern_id: pattern?.id || UnknownRouteNumber,
@@ -42,12 +38,14 @@ export class TripsService {
 
     await this.patternsService.ingest(patterns);
 
-    const results: { id: number; pattern_id: number }[] = await db
+    await db
       .insert(routePatterns.map((p) => new RoutePattern(p).asInsertable()))
       .into("route_patterns")
       .onConflict(["route_id", "pattern_id"])
       .ignore()
       .returning(["id", "pattern_id"]);
+
+    const results = await db.select("id", "pattern_id").from("route_patterns");
 
     const shapeToRoutePatternIDMap = await this.getRoutePatternIDMap(results);
 
@@ -85,6 +83,8 @@ export class TripsService {
   private async getRoutePatternIDMap(
     routePatterns: { id: number; pattern_id: number }[]
   ): Promise<SimpleMap<number>> {
+    console.log(routePatterns);
+
     const results: { id: number; shape_id: number }[] = await db
       .select(["route_patterns.id as id", "shape_id"])
       .from("route_patterns")
@@ -93,6 +93,8 @@ export class TripsService {
         "route_patterns.id",
         routePatterns.map((rp) => rp.id)
       );
+
+    console.log(results);
 
     return results.reduce((acc, { id, shape_id }) => {
       acc[shape_id] = id;

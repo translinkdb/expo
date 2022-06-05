@@ -6,7 +6,7 @@ export class ShapesService {
   public async ingest(shapePoints: ShapePoint[]) {
     const shapes = uniquify(shapePoints.map((s) => s.shapeID))
       .filter((s) => s !== undefined)
-      .map((s) => new Shape(s));
+      .map((s) => new Shape({ id: s }));
 
     await db
       .insert(shapes.map((s) => s.asInsertable()))

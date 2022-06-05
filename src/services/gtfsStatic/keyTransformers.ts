@@ -45,7 +45,7 @@ export const directionExceptionKeyTransformers = {
 
 export const shapeKeyTransformers = {
   shape_pt_lat: "latitude",
-  shape_pt_long: "longitude",
+  shape_pt_lon: "longitude",
   shape_pt_sequence: "order",
   shape_dist_traveled: "cumulative_distance",
 };
