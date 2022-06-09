@@ -17,10 +17,14 @@ export function applyFilters(
   for (const [key, filter] of Object.entries(filters)) {
     const column = getColumn(key, converters);
 
-    if (isStringFilter(filter)) {
-      builder = applyStringFilter(builder, column, filter);
-    } else if (isCoordinatesFilter(filter)) {
+    // The order here is important...
+    if (!filter) continue;
+    else if (isCoordinatesFilter(filter)) {
       builder = applyCoordinatesFilter(builder, filter);
+    } else if (isStringFilter(filter)) {
+      builder = applyStringFilter(builder, column, filter);
+    } else {
+      builder = builder.where(column, "=", filter);
     }
   }
 

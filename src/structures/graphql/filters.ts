@@ -8,7 +8,7 @@ export interface StringFilter {
 }
 
 export function isStringFilter(filter: SimpleMap): filter is StringFilter {
-  return typeof (filter.exact || filter.contains) === "string";
+  return filter.exact !== undefined || filter.contains !== undefined;
 }
 
 export interface CoordinatesFilter {
@@ -36,4 +36,9 @@ export interface RoutesFilters {
 export interface StopsFilters {
   code?: StringFilter;
   name?: StringFilter;
+}
+
+export interface PatternsFilters {
+  id?: number;
+  name?: string;
 }

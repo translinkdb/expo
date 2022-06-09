@@ -1,6 +1,19 @@
 import { db } from "../../db";
 import { Pattern } from "../../db/entities/Pattern";
 import { Shape } from "../../db/entities/Shape";
+import { PatternsService } from "../../services/db/PatternsService";
+import { PatternsFilters } from "../../structures/graphql/filters";
+
+const patternsService = new PatternsService();
+
+export async function patternsResolver(
+  _parent: any,
+  { filters }: { filters: PatternsFilters }
+) {
+  const patterns = await patternsService.list(filters);
+
+  return patterns;
+}
 
 export async function patternHeadsignResolver(
   parent: Pattern

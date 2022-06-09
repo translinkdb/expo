@@ -2,6 +2,7 @@ import { db } from "../../db";
 import { Pattern, RoutePattern } from "../../db/entities/Pattern";
 import { Block, Trip } from "../../db/entities/Trip";
 import { chunk, uniquify } from "../../helpers/array";
+import { VehiclePosition } from "../../structures/GTFSRealtime/VehiclePosition";
 import { SimpleMap } from "../../structures/helpers";
 import { PatternsService } from "./PatternsService";
 import { UnknownRouteNumber } from "./RoutesService";
@@ -78,6 +79,33 @@ export class TripsService {
         .onConflict(["id"])
         .merge();
     }
+  }
+
+  public async attachToVehiclePositions(
+    vehiclePositions: VehiclePosition[]
+  ): Promise<VehiclePosition[]> {
+    const tripIDs = uniquify(vehiclePositions.map((vp) => vp.tripID));
+
+    const results = await db.select("*").from("trips").whereIn("id", tripIDs);
+
+    const trips = results.map((t) => new Trip(t));
+
+    return vehiclePositions.map((vp) => {
+      const trip = trips.find((t) => t.id === vp.tripID);
+
+      vp.setTrip(trip);
+
+      return vp;
+    });
+  }
+
+  public async fetchRoutePattern(trip: Trip): Promise<RoutePattern> {
+    const rp = await db
+      .select("*")
+      .from("route_patterns")
+      .where("id", "=", trip.routePatternID);
+
+    return new RoutePattern(rp[0]);
   }
 
   private async getRoutePatternIDMap(

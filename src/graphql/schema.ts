@@ -1,9 +1,16 @@
 import { gql } from "apollo-server";
 
 export const typeDefs = gql`
+  scalar Date
+
   type Query {
+    # Static
     routes(filters: RouteFilters): [Route!]!
     stops(filters: StopFilters): [Stop!]!
+    patterns(filters: PatternFilters): [Pattern!]!
+
+    # GTFS Realtime
+    vehiclePositions(forceRefetch: Boolean): [VehiclePosition!]!
   }
 
   type Mutation {
@@ -51,6 +58,27 @@ export const typeDefs = gql`
     cumulativeDistance: Float!
   }
 
+  type Trip {
+    id: Int!
+    headsign: String!
+    routePattern: RoutePattern!
+  }
+
+  type RoutePattern {
+    routeID: Int!
+    route: Route!
+
+    patternID: Int!
+    pattern: Pattern!
+  }
+
+  type VehiclePosition {
+    timestamp: Date!
+    position: Coordinates!
+    trip: Trip!
+    vehicleID: Int
+  }
+
   # Input types
   input RouteFilters {
     number: StringFilter
@@ -61,6 +89,11 @@ export const typeDefs = gql`
     code: StringFilter
     name: StringFilter
     coordinates: CoordinatesFilter
+  }
+
+  input PatternFilters {
+    id: ID
+    routeID: ID
   }
 
   input StringFilter {

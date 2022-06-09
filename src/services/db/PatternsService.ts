@@ -1,6 +1,9 @@
 import { db } from "../../db";
 import { Pattern } from "../../db/entities/Pattern";
+import { applyFilters } from "../../db/helpers/filters";
 import { chunk } from "../../helpers/array";
+import { PatternsFilters } from "../../structures/graphql/filters";
+import { SimpleMap } from "../../structures/helpers";
 
 export const UnknownPatternID = -1;
 
@@ -33,5 +36,19 @@ export class PatternsService {
       .into("patterns")
       .onConflict("id")
       .ignore();
+  }
+
+  public async get(id: number): Promise<Pattern> {
+    const raw = await db.select("*").from("patterns").where("id", "=", id);
+
+    return new Pattern(raw[0]);
+  }
+
+  public async list(filters: PatternsFilters): Promise<Pattern[]> {
+    const query = applyFilters(db.queryBuilder(), filters || {});
+
+    const patterns: SimpleMap[] = await query.select().from("patterns");
+
+    return patterns.map((p) => new Pattern(p));
   }
 }
