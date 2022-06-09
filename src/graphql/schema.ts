@@ -14,7 +14,7 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    ingestGTFSStaticData: String
+    ingestGTFSStaticData(date: SimpleDate!): String
   }
 
   # Return types
@@ -110,5 +110,11 @@ export const typeDefs = gql`
     exact: CoordinatesInput
     near: CoordinatesInput
     radius: Float
+  }
+
+  input SimpleDate {
+    year: Int!
+    month: Int!
+    day: Int!
   }
 `;

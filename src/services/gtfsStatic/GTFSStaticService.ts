@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import AdmZip from "adm-zip";
 import { GTFSStaticParser } from "./parser";
 
-type SimpleDate = {
+export type SimpleDate = {
   year: number;
   month: number;
   day: number;
@@ -27,6 +27,7 @@ export class GTFSStaticService {
       month
     )}-${zeroPrefix(day)}/google_transit.zip`;
 
+    console.log("Fetching GTFS static information...");
     const response = await fetch(url);
 
     return await response.buffer();
