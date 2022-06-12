@@ -4,11 +4,11 @@ import { toInt } from "../../helpers/typeConverters";
 
 export class Trip implements Entity {
   id: number;
-  serviceID: number;
+  serviceID: string;
 
   headsign: string;
   directionID: number;
-  blockID: number;
+  blockID: string;
   routePatternID: number;
 
   // Unused by Translink
@@ -22,10 +22,10 @@ export class Trip implements Entity {
 
   constructor(raw: SimpleMap) {
     this.id = toInt(raw.id)!;
-    this.serviceID = toInt(raw.service_id)!;
+    this.serviceID = raw.service_id;
     this.headsign = raw.headsign;
     this.directionID = toInt(raw.direction_id)!;
-    this.blockID = toInt(raw.block_id)!;
+    this.blockID = raw.block_id!;
     this.routePatternID = toInt(raw.route_pattern_id)!;
   }
 
@@ -42,10 +42,10 @@ export class Trip implements Entity {
 }
 
 export class Block implements Entity {
-  id: number;
+  id: string;
 
   constructor(raw: SimpleMap) {
-    this.id = toInt(raw.id)!;
+    this.id = raw.id!;
   }
 
   asInsertable(): SimpleMap<any> {

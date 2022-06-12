@@ -62,9 +62,9 @@ export class TripsService {
   }
 
   public async ingest(trips: Trip[]) {
-    const blocks = uniquify(trips.map((t) => t.blockID))
-      .map((b) => new Block({ id: b }))
-      .filter((b) => b.id !== undefined);
+    const blocks = uniquify(trips.map((t) => t.blockID)).map(
+      (b) => new Block({ id: b })
+    );
 
     await db
       .insert(blocks.map((b) => b.asInsertable()))
@@ -111,8 +111,6 @@ export class TripsService {
   private async getRoutePatternIDMap(
     routePatterns: { id: number; pattern_id: number }[]
   ): Promise<SimpleMap<number>> {
-    console.log(routePatterns);
-
     const results: { id: number; shape_id: number }[] = await db
       .select(["route_patterns.id as id", "shape_id"])
       .from("route_patterns")
@@ -121,8 +119,6 @@ export class TripsService {
         "route_patterns.id",
         routePatterns.map((rp) => rp.id)
       );
-
-    console.log(results);
 
     return results.reduce((acc, { id, shape_id }) => {
       acc[shape_id] = id;

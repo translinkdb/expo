@@ -2,7 +2,7 @@ import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable("services", (table) => {
-    table.integer("id").primary();
+    table.string("id").primary();
     table.boolean("monday");
     table.boolean("tuesday");
     table.boolean("wednesday");
@@ -16,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
   });
 
   await knex.schema.createTable("service_exceptions", (table) => {
-    table.integer("service_id").references("services.id");
+    table.string("service_id").references("services.id");
     table.date("date");
     table.integer("type");
 

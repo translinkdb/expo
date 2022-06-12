@@ -3,7 +3,7 @@ import { Entity } from "../entity";
 import { toBoolean, toDate, toInt } from "../../helpers/typeConverters";
 
 export class Service implements Entity {
-  id: number;
+  id: string;
   monday: boolean;
   tuesday: boolean;
   wednesday: boolean;
@@ -16,7 +16,7 @@ export class Service implements Entity {
   name?: string;
 
   constructor(raw: SimpleMap) {
-    this.id = toInt(raw.id)!;
+    this.id = raw.id;
     this.monday = toBoolean(raw.monday);
     this.tuesday = toBoolean(raw.tuesday);
     this.wednesday = toBoolean(raw.wednesday);
@@ -52,12 +52,12 @@ export enum ServiceExceptionType {
 }
 
 export class ServiceException implements Entity {
-  serviceID: number;
+  serviceID: string;
   date: Date;
   type: ServiceExceptionType;
 
   constructor(raw: SimpleMap) {
-    this.serviceID = toInt(raw.service_id)!;
+    this.serviceID = raw.service_id!;
     this.date = toDate(raw.date)!;
     this.type = raw.type;
   }

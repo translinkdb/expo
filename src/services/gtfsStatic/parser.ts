@@ -184,10 +184,12 @@ export class GTFSStaticParser {
     const parsedServices = await this.parse(servicesFile);
     const parsedExceptions = await this.parse(exceptionsFile);
 
-    const servicesObjects = convertToObjects(
-      parsedServices,
-      serviceKeyTransformers
-    ).filter((o) => o.id !== "HD");
+    const servicesObjects = uniquify(
+      convertToObjects(parsedServices, serviceKeyTransformers).filter(
+        (o) => o.id !== "HD"
+      ),
+      ["id"]
+    );
 
     const exceptionObjects = uniquify(
       convertToObjects(parsedExceptions, serviceExceptionKeyTransformers),
